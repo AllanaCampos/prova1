@@ -138,6 +138,50 @@ class Medico{
 
 };
 
+
+class Horario{
+    private:
+
+        int hora;
+        int minuto;
+
+    public:
+        int getHora(){
+            return this -> hora;
+        }
+        void setHora(int _hora){
+            this-> hora = _hora;
+        }
+        int getMinuto(){
+            return this->minuto;
+        }
+        void setMinuto(int _minuto){
+            this->minuto = _minuto;
+        }
+        static Horario * leHorario(){
+            Horario * novoHorario = new Horario(); 
+            int _hora, _minuto; 
+            do {
+                cout << "Digite a hora e os minutos: " << endl;
+                cin >> _hora >> _minuto; 
+                novoHorario->setHora(_hora); 
+                novoHorario->setMinuto(_minuto);
+            } while(!Horario::horarioValido(novoHorario)); 
+            return novoHorario; 
+        }
+        static bool horarioValido(Horario * horario){
+            if(horario->getHora() < 0 || horario->getHora() > 23){
+                cout << "Horario invalido" << endl;
+                return false; 
+            }
+            if(horario->getMinuto() < 0 || horario->getMinuto() > 59){
+                cout << "Horario invalido" << endl;
+                return false;
+            }
+            return true;
+        }
+};
+
 class Consulta{
     private:
 
@@ -210,3 +254,4 @@ int main (){
     }while (opcao != 0);
     return 0;
 }
+
