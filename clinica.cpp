@@ -123,7 +123,6 @@ class Medico{
     }
 
     void setCRM(string _CRM){
-
         this->CRM = _CRM;
     }
 
@@ -132,10 +131,44 @@ class Medico{
     }
 
     void setEspecialidade(string _Especialidade){
-
         this -> Especialidade = _Especialidade;
     }
 
+    static int getPosMedico(string CRM, vector<Medico *> Medicos){
+            int pos = 0;
+            for(Medico * m : Medicos){
+                if(m->getCRM() == CRM){
+                    return pos;
+                }
+                pos++;
+            }
+            return -1;
+    }
+    static void listar(vector<Medico *> Medicos){
+            cout << "<____________MÉDICOS ENCONTRADOS____________>" << endl;
+            for(auto m : Medicos){
+                cout << "Nome: " << m->Nome << endl;
+                cout << "CRM: " << m->getCRM() << endl;
+                cout << "Especialidade: " << m->getEspecialidade() << endl;
+            }
+    }
+    static void localizarMedico(vector<Medico *> Medicos){
+            Medico *encontrado;
+            string CRM;
+            int pos;
+            cout << "Digite o CRM do médico que deseja localizar:" << endl;
+            cin.ignore();
+            getline(cin >> ws, CRM);
+            pos = Medico::getPosMedico(CRM, Medicos);
+            if(pos == -1){
+                cout << "Paciente não encontrado" << endl;
+            }
+            else{
+                encontrado = Medicos[pos];
+                cout << "Nome: " << encontrado->Nome << endl;
+                cout << "Data de nascimento: " << encontrado->getEspecialidade() << endl;
+            }
+    }
 };
 
 
