@@ -220,7 +220,7 @@ public:
         }
     }
     static void listar(vector<Paciente*> pacientes){
-        cout << "<__________PACIENTES CADASTRADOS__________>" << endl;
+        cout << "__________PACIENTES CADASTRADOS__________" << endl;
         for(auto p : pacientes){
             cout << "Nome: " << p -> getNome() << endl;
             cout << "CPF: " << p -> getCPF() << endl;
@@ -337,7 +337,7 @@ class Medico{
         return -1;
     }
     static void listar(vector<Medico *> Medicos){
-        cout << "<____________MÉDICOS ENCONTRADOS____________>" << endl;
+        cout << "____________MEDICOS CADASTRADOS____________" << endl;
         for(auto m : Medicos){
             cout << "Nome: " << m->Nome << endl;
             cout << "CRM: " << m->getCRM() << endl;
