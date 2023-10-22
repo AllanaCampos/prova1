@@ -64,6 +64,7 @@ class Data{
             return novaData; 
         }
 };
+
 class Paciente {
 
 private:
@@ -82,12 +83,11 @@ public:
         return cpf;
     } 
     Data * getData(){
-        return this -> dataNasc;
+        return this->dataNasc;
     }
     void setData(Data * _data){
          this -> dataNasc = _data;
     }
-
     static int getPosPaciente(string cpf, vector<Paciente * > pacientes){
             int pos = 0;
             for(Paciente * p : pacientes){
@@ -145,7 +145,6 @@ class Medico{
     }
 
     void setCRM(string _CRM){
-
         this->CRM = _CRM;
     }
 
@@ -154,11 +153,46 @@ class Medico{
     }
 
     void setEspecialidade(string _Especialidade){
-
         this -> Especialidade = _Especialidade;
     }
 
+    static int getPosMedico(string CRM, vector<Medico *> Medicos){
+            int pos = 0;
+            for(Medico * m : Medicos){
+                if(m->getCRM() == CRM){
+                    return pos;
+                }
+                pos++;
+            }
+            return -1;
+    }
+    static void listar(vector<Medico *> Medicos){
+            cout << "<____________MÉDICOS ENCONTRADOS____________>" << endl;
+            for(auto m : Medicos){
+                cout << "Nome: " << m->Nome << endl;
+                cout << "CRM: " << m->getCRM() << endl;
+                cout << "Especialidade: " << m->getEspecialidade() << endl;
+            }
+    }
+    static void localizarMedico(vector<Medico *> Medicos){
+            Medico *encontrado;
+            string CRM;
+            int pos;
+            cout << "Digite o CRM do médico que deseja localizar:" << endl;
+            cin.ignore();
+            getline(cin >> ws, CRM);
+            pos = Medico::getPosMedico(CRM, Medicos);
+            if(pos == -1){
+                cout << "Paciente não encontrado" << endl;
+            }
+            else{
+                encontrado = Medicos[pos];
+                cout << "Nome: " << encontrado->Nome << endl;
+                cout << "Data de nascimento: " << encontrado->getEspecialidade() << endl;
+            }
+    }
 };
+
 
 class Horario{
     private:
@@ -211,11 +245,26 @@ class Consulta{
         string convenio;
         Paciente * paciente;
         Medico * medico;
+        Data * data;
+        Horario * horario;
 
     public:
         Consulta(){
             this->efetuada = 'n';
             this->convenio = "nenhum";
+        }
+
+        Data * getData(){
+            return this->data;
+        }
+        void setData(Data * _data){
+            this->data = _data;
+        }
+        Horario * getHorario(){
+            return this->horario;
+        }
+        void setHorario(Horario * _horario){
+           this->horario = _horario;
         }
         char getEfetuada(){
             return this->efetuada;
@@ -247,6 +296,53 @@ class Consulta{
         void setMedico(Medico * _medico){
             this->medico = _medico;
         }
+    
+static void listarPacientes(string crm, vector<Consulta *> consultas){
+            cout << "<_________PACIENTES COM CONSULTAS MARCADAS________>" << endl;
+            for(auto c : consultas){
+                if(c->getMedico()->getCRM() == crm){
+                    cout << "Nome: " << c->getPaciente()->getNome() << endl;
+                    cout << "CPF: " << c->getPaciente()->getCPF() << endl;
+                    cout << "Data de nascimento: " << c->getPaciente()->getData() << endl;
+                }
+            }
+        }
+        //verifica se existe consultas com o medico informado
+        static bool existeConsulta(string crm, vector<Consulta *> consultas){
+            for(auto c : consultas){
+                if(c->getMedico()->getCRM() == crm){
+                    return true;
+                }
+            }
+            return false;
+        }
+static void listarConsultas(vector<Consulta *> consultas){
+            cout << "<_________Consultas realizadas_________>" << endl;
+            for(auto c : consultas){
+                if(c->getEfetuada() == 's'){
+                    cout << "Medico: " << c->getMedico()->Nome << endl;
+                    cout << "Paciente: " << c->getPaciente()->getNome() << endl;
+                    cout << "Data: ";
+                    c->getData()->imprimirData();
+                    cout << "Horario: " << c->getHorario()->getHora() << ":" << c->getHorario()->getMinuto() << endl;
+                    cout << "Duracao: " << c->getTempConsulta() << endl;
+                    cout << "Convenio: " << c->getConvenio() << endl;
+                }
+            }
+            cout << "<_________Consultas nao realizadas__________>" << endl;
+            for(auto c : consultas){
+                if(c->getEfetuada() == 'n'){
+                    cout << "Medico: " << c->getMedico()->Nome << endl;
+                    cout << "Paciente: " << c->getPaciente()->getNome() << endl;
+                    cout << "Data: ";
+                    c->getData()->imprimirData();
+                    cout << "Horario: " << c->getHorario()->getHora() << ":" << c->getHorario()->getMinuto() << endl;
+                    cout << "Duracao: " << c->getTempConsulta() << endl;
+                    cout << "Convenio: " << c->getConvenio() << endl;
+                }
+            }
+        }
+
 };
 
 int main (){
