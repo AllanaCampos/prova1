@@ -260,6 +260,73 @@ class Medico{
         this -> Especialidade = _Especialidade;
     }
 
+    static void addMedico(vector<Medico *> &medicos){
+        Medico *m;
+        string nome, especialidade, crm;
+        cout <<"Digite o nome do medico:" << endl;
+        cin.ignore();
+        getline(cin, nome);
+        cout <<"Digite o CRM do medico:" << endl;
+        getline(cin, crm);
+        cout << "Digite a especialidade do medico:" << endl;
+        getline(cin, especialidade);
+        m = new Medico(nome, crm, especialidade);
+        medicos.push_back(m);
+    }
+    static void deleteMedico(vector<Medico *> &medicos){
+        string crm;
+        int pos;
+        cout << "Digite o CRM do medico que deve ser excluido" << endl;
+        cin.ignore();
+        getline(cin, crm);
+        pos = Medico::getPosMedico(crm, medicos);
+        if(pos == -1){
+            cout << "Medico nao encontrado" << endl;
+        }
+        else{
+            medicos.erase(medicos.begin() + pos);
+            cout << "Medico excluido" << endl;
+        }
+    }
+    static void updateMedico(vector<Medico *> &medicos){
+        Medico * alterado;
+        string crm, nome, especialidade;
+        char op;
+        int pos;
+        cout << "Digite o CRM do paciente que deve ser alterado" << endl;
+        cin.ignore();
+        getline(cin, crm);
+        pos = Medico::getPosMedico(crm, medicos);
+        if(pos == -1){
+            cout << "Medico nao encontrado" << endl;
+        }
+        else{
+            alterado = medicos[pos];
+            cout << "Nome: " << alterado->Nome << endl;
+            cout << "Especialidade: " << alterado->getEspecialidade() << endl;
+            do{
+                cout << "Deseja alterar o nome? (s/n)" << endl;
+                cin >> op;
+                if(op == 's'){
+                    cout << "Digite o novo nome" << endl;
+                    cin.ignore();
+                    getline(cin, nome);
+                    alterado->Nome = nome;
+                }
+            }while (op!='n' && op!='s');
+            op = 'a';
+            do{
+                cout << "Deseja alterar a especialidade? (s/n)" << endl;
+                cin >> op;
+                if(op == 's'){
+                    cout << "Digite a nova especialidade" << endl;
+                    cin.ignore();
+                    getline(cin, especialidade);
+                    alterado->setEspecialidade(especialidade);
+                }
+            }while (op!='n' && op!='s');
+        }
+    }
     static int getPosMedico(string CRM, vector<Medico *> Medicos){
         int pos = 0;
         for(Medico * m : Medicos){
@@ -282,17 +349,17 @@ class Medico{
         Medico *encontrado;
         string CRM;
         int pos;
-        cout << "Digite o CRM do médico que deseja localizar:" << endl;
+        cout << "Digite o CRM do medico que deseja localizar:" << endl;
         cin.ignore();
         getline(cin >> ws, CRM);
         pos = Medico::getPosMedico(CRM, Medicos);
         if(pos == -1){
-            cout << "Paciente não encontrado" << endl;
+            cout << "Medico não encontrado" << endl;
         }
         else{
             encontrado = Medicos[pos];
             cout << "Nome: " << encontrado->Nome << endl;
-            cout << "Data de nascimento: " << encontrado->getEspecialidade() << endl;
+            cout << "Especialidade: " << encontrado->getEspecialidade() << endl;
         }
     }
 };
@@ -450,8 +517,8 @@ class Consulta{
 };
 
 void menuPacientes(vector<Paciente *> &pacientes);
-//void menuMedicos(vector<Medico *> &medicos);
-//void menuConsultas(vector<Paciente *> pacientes, vector<Medico *> medicos, vector<Consulta *> &consultas);
+void menuMedicos(vector<Medico *> &medicos);
+void menuConsultas(vector<Paciente *> pacientes, vector<Medico *> medicos, vector<Consulta *> &consultas);
 
 int main (){
     vector<Paciente *> pacientes;
@@ -472,7 +539,7 @@ int main (){
             menuPacientes(pacientes);
             break;
         case 2:
-            //menuMedicos(medicos);
+            menuMedicos(medicos);
             break;
         case 3:
             //menuConsultas(pacientes, medicos, consultas);
@@ -515,7 +582,7 @@ void menuPacientes(vector<Paciente*> &pacientes){
 
     }while(opcao != 0);
 }
-/*void menuMedicos(vector<Medico*> &medicos){
+void menuMedicos(vector<Medico*> &medicos){
     int opcao;
     do{
         cout << "__________GESTAO DE MEDICOS__________" << endl;
@@ -530,21 +597,26 @@ void menuPacientes(vector<Paciente*> &pacientes){
 
         switch (opcao){
         case 1:
+            Medico::addMedico(medicos);
             break;
         case 2:
+            Medico::deleteMedico(medicos);
             break;
         case 3:
+            Medico::updateMedico(medicos);
             break;
         case 4:
+            Medico::listar(medicos);
             break;
         case 5:
+            Medico::localizarMedico(medicos);
             break;
         }
 
     }while(opcao != 0);
 }
 
-void menuConsultas(vector<Paciente *> pacientes, vector<Medico *> medicos, vector<Consulta *> &consultas){
+/*void menuConsultas(vector<Paciente *> pacientes, vector<Medico *> medicos, vector<Consulta *> &consultas){
     int opcao;
     do{
         cout << "__________GESTAO DE CONSULTAS__________" << endl;
