@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <ctime>
 
@@ -364,7 +363,6 @@ class Medico{
     }
 };
 
-
 class Horario{
     private:
 
@@ -468,8 +466,140 @@ class Consulta{
             this->medico = _medico;
         }
     
+        static void addConsulta(vector<Paciente*> pacientes, vector<Medico*> medicos, vector<Consulta*> &consultas){
+            int pos, tempo;
+            char op;
+            string cpf, crm, _convenio;
+            Data *dataConsulta;
+            Horario *horarioConsulta;
+            Consulta * novaConsulta = new Consulta();
+            cout << "Informe o CPF do paciente utilizando o formato a seguir: xxx.xxx.xxx-xx" << endl;
+            cin >> cpf;
+            pos = Paciente::getPosPaciente(cpf, pacientes);
+            if(pos == -1){
+                cout << "Paciente inexistente" << endl;
+                return;
+            }
+            cout << "Informe o CRM do medico" << endl;
+            cin >> crm;
+            novaConsulta->setPaciente(pacientes[pos]);
+            pos = Medico::getPosMedico(crm, medicos);
+            if( pos == -1){
+                cout << "Medico inexistente" << endl;
+                return;
+            }
+            novaConsulta->setMedico(medicos[pos]);
+            cout << "Informe a data da consulta. ";
+            dataConsulta = Data::leData();
+            novaConsulta->setData(dataConsulta);
+            cout << "Informe o horario da consulta. ";
+            horarioConsulta = Horario::leHorario();
+            novaConsulta->setHorario(horarioConsulta);
+            cout << "Informe a duracao da consulta em minutos" << endl;
+            cin >> tempo;
+            novaConsulta->setTempConsulta(tempo);
+            cout << "Possui convenio?" << endl;
+            cin >> op;
+            if(op == 's'){
+                cout << "Informe o convenio" << endl;
+                cin >> _convenio;
+            }
+            novaConsulta->setConvenio(_convenio);
+            consultas.push_back(novaConsulta);
+        }
+        static void deleteConsulta(vector<Consulta *> &consultas){
+            int pos;
+            string crm, cpf;
+            cout << "Informe o CRM do medico responsavel pela consulta" << endl;
+            cin >> crm;
+            if(!Consulta::existeConsulta(crm, consultas)){
+                cout << "Nao foi possivel encontrar consultas com este medico" << endl;
+                return;
+            }
+            Consulta::listarPacientes(crm, consultas);
+            cout << "Informe o CPF do paciente" << endl;
+            cin >> cpf;
+            pos = Consulta::getPosPaciente(cpf, crm, consultas);
+            if(pos == -1){
+                cout << "Paciente nao encontrado" << endl;
+                return;
+            }
+            consultas.erase(consultas.begin() + pos);
+
+        }
+        static void updateConsulta(vector<Consulta *> &consultas){
+            int pos;
+            string crm, cpf;
+            char opcao;
+            cout << "Informe o CRM do medico responsavel pela consulta" << endl;
+            cin >> crm;
+            if(!Consulta::existeConsulta(crm, consultas)){
+                cout << "Nao foi possivel encontrar consultas com este medico" << endl;
+                return;
+            }
+            Consulta::listarPacientes(crm, consultas);
+            cout << "Informe o CPF do paciente" << endl;
+            cin >> cpf;
+            pos = Consulta::getPosPaciente(cpf, crm, consultas);
+            if(pos == -1){
+                cout << "Paciente nao encontrado" << endl;
+                return;
+            }
+            cout << "Deseja registrar a consulta como realizada? (s/n)" << endl;
+            cin >> opcao;
+            if(opcao == 's'){
+                consultas[pos]->setEfetuada('s');
+            }
+            if(opcao == 'n'){
+                cout << "Deseja alterar a data da consulta? (s/n)" << endl;
+                cin >> opcao;
+                if(opcao == 's'){
+                    Data * novaData;
+                    cout << "Informe a nova data. "; 
+                    novaData = Data::leData();
+                    consultas[pos]->setData(novaData);
+                }
+                cout << "Deseja alterar o horario da consulta? (s/n)" << endl;
+                cin >> opcao;
+                if(opcao == 's'){
+                    Horario * novoHorario;
+                    cout << "Informe o novo horario. "; 
+                    novoHorario = Horario::leHorario();
+                    consultas[pos]->setHorario(novoHorario);
+                }
+                cout << "Deseja alterar a duracao da consulta? (s/n)" << endl;
+                cin >> opcao;
+                if(opcao == 's'){
+                    int tempo;
+                    cout << "Informe a nova duracao da consulta" << endl; 
+                    cin >> tempo;
+                    consultas[pos]->setTempConsulta(tempo);
+                }
+                cout << "Deseja alterar o convenio da consulta? (s/n)" << endl;
+                cin >> opcao;
+                if(opcao == 's'){
+                    string novoConvenio;
+                    cout << "Informe o novo convenio" << endl;
+                    cin >> novoConvenio; 
+                    consultas[pos]->setConvenio(novoConvenio);
+                }
+
+            }
+        }
+        static int getPosPaciente(string cpf, string crm, vector<Consulta *> consultas){
+            int pos = 0;
+            for(auto c : consultas){
+                if(c->getMedico()->getCRM() == crm){
+                    if(c->getPaciente()->getCPF() ==cpf){
+                        return pos;
+                    }
+                }
+                pos ++;
+            }
+            return -1;
+        }
         static void listarPacientes(string crm, vector<Consulta *> consultas){
-            cout << "<_________PACIENTES COM CONSULTAS MARCADAS________>" << endl;
+            cout << "_________PACIENTES COM CONSULTAS MARCADAS________" << endl;
             for(auto c : consultas){
                 if(c->getMedico()->getCRM() == crm){
                     cout << "Nome: " << c->getPaciente()->getNome() << endl;
@@ -488,7 +618,7 @@ class Consulta{
             return false;
         }
         static void listarConsultas(vector<Consulta *> consultas){
-            cout << "<_________Consultas realizadas_________>" << endl;
+            cout << "_________CONSULTAS REALIZADAS_________" << endl;
             for(auto c : consultas){
                 if(c->getEfetuada() == 's'){
                     cout << "Medico: " << c->getMedico()->Nome << endl;
@@ -500,7 +630,7 @@ class Consulta{
                     cout << "Convenio: " << c->getConvenio() << endl;
                 }
             }
-            cout << "<_________Consultas nao realizadas__________>" << endl;
+            cout << "_________CONSULTAS NAO REALIZADAS__________" << endl;
             for(auto c : consultas){
                 if(c->getEfetuada() == 'n'){
                     cout << "Medico: " << c->getMedico()->Nome << endl;
@@ -542,7 +672,7 @@ int main (){
             menuMedicos(medicos);
             break;
         case 3:
-            //menuConsultas(pacientes, medicos, consultas);
+            menuConsultas(pacientes, medicos, consultas);
             break;
         }
     }while (opcao != 0);
@@ -615,8 +745,7 @@ void menuMedicos(vector<Medico*> &medicos){
 
     }while(opcao != 0);
 }
-
-/*void menuConsultas(vector<Paciente *> pacientes, vector<Medico *> medicos, vector<Consulta *> &consultas){
+void menuConsultas(vector<Paciente *> pacientes, vector<Medico *> medicos, vector<Consulta *> &consultas){
     int opcao;
     do{
         cout << "__________GESTAO DE CONSULTAS__________" << endl;
@@ -630,15 +759,18 @@ void menuMedicos(vector<Medico*> &medicos){
 
         switch (opcao){
         case 1:
+            Consulta::addConsulta(pacientes, medicos, consultas);
             break;
         case 2:
+            Consulta::deleteConsulta(consultas);
             break;
         case 3:
+            Consulta::updateConsulta(consultas);
             break;
         case 4:
+            Consulta::listarConsultas(consultas);
             break;
         }
 
     }while(opcao != 0);
 }
-*/
