@@ -88,6 +88,43 @@ public:
     void setData(Data * _data){
          this -> dataNasc = _data;
     }
+    static int getPosPaciente(string cpf, vector<Paciente * > pacientes){
+            int pos = 0;
+            for(Paciente * p : pacientes){
+                if(p->getCPF() == cpf){
+                    return pos;
+                }
+                pos++;
+            }
+            return -1;
+        }
+        static void locatePaciente(vector<Paciente * > pacientes){
+            Paciente *encontrado;
+            string cpf;
+            int pos;
+            cout << "Digite o CPF do paciente que deseja localizar" << endl;
+            cin.ignore();
+            getline(cin, cpf);
+            pos = Paciente::getPosPaciente(cpf, pacientes);
+            if(pos == -1){
+                cout << "Paciente não encontrado" << endl;
+            }
+            else{
+                encontrado = pacientes[pos];
+                cout << "Nome: " << encontrado -> getNome() << endl;
+                cout << "Data de nascimento: ";
+                encontrado -> getData()-> imprimirData();
+            }
+        }
+        static void listar(vector<Paciente*> pacientes){
+            cout << "<__________PACIENTES CADASTRADOS__________>" << endl;
+            for(auto p : pacientes){
+                cout << "Nome: " << p -> getNome() << endl;
+                cout << "CPF: " << p -> getCPF() << endl;
+                cout << "Data de Nascimento: ";
+                p ->getData()-> imprimirData();
+            }
+        } 
 };
 
 class Medico{
