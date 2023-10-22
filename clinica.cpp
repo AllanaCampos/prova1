@@ -55,7 +55,7 @@ class Data{
             Data * novaData = new Data(); 
             int _Dia, _Mes, _Ano; 
             do {
-                cout << "Digite o dia, o mês e o ano: " << endl;
+                cout << "Digite o dia, o mes e o ano: " << endl;
                 cin >> _Dia >> _Mes >> _Ano; 
                 novaData->setDia(_Dia); 
                 novaData->setMes(_Mes);
@@ -90,6 +90,107 @@ public:
     }
     void setData(Data * _data){
          this -> dataNasc = _data;
+    }
+    static void addPaciente(vector<Paciente*> &pacientes){
+        Paciente *p = new Paciente();
+        string nome, cpf;
+        Data * nascimento;
+        cout <<"Digite o nome do paciente:" << endl;
+        cin.ignore();
+        getline(cin, nome);
+        p->setNome(nome);
+        do{
+            cout <<"Digite o CPF do paciente com o seguinte formato: xxx.xxx.xxx-xx" << endl;
+            getline(cin, cpf);
+            p->setCPF(cpf);
+        }while(!Paciente::validarCPF(cpf));
+        cout << "Informe a data de nascimento. ";
+        nascimento = Data::leData();
+        p->setData(nascimento);
+        pacientes.push_back(p);
+    }
+    static void deletePaciente(vector<Paciente *> &pacientes){
+        string cpf;
+        int pos;
+        cout << "Digite o CPF do paciente que deve ser excluido" << endl;
+        cin.ignore();
+        getline(cin, cpf);
+        pos = Paciente::getPosPaciente(cpf, pacientes);
+        if(pos == -1){
+            cout << "Paciente nao encontrado" << endl;
+        }
+        else{
+            pacientes.erase(pacientes.begin() + pos);
+            cout << "Paciente excluido" << endl;
+        }
+    }
+    static void updatePaciente(vector<Paciente *> &pacientes){
+        Paciente * alterado;
+        string cpf, nome;
+        char op;
+        int pos;
+        cout << "Digite o CPF do paciente que deve ser alterado" << endl;
+        cin.ignore();
+        getline(cin, cpf);
+        pos = Paciente::getPosPaciente(cpf, pacientes);
+        if(pos == -1){
+            cout << "Paciente nao encontrado" << endl;
+        }
+        else{
+            alterado = pacientes[pos];
+            cout << "Nome: " << alterado->getNome() << endl;
+            cout << "Data de nascimento: ";
+            alterado->getData()->imprimirData();
+            do{
+                cout << "Deseja alterar o nome? (s/n)" << endl;
+                cin >> op;
+                if(op == 's'){
+                    cout << "Digite o novo nome" << endl;
+                    cin.ignore();
+                    getline(cin, nome);
+                    alterado->setNome(nome);
+                }
+            }while (op!='n' && op!='s');
+            op = 'a';
+            do{
+                cout << "Deseja alterar a data de nascimento? (s/n)" << endl;
+                cin >> op;
+                if(op == 's'){
+                    Data * data;
+                    cout << "Digite a nova data. ";
+                    data = Data::leData();
+                    alterado->setData(data);
+                }
+            }while (op!='n' && op!='s');
+        }
+    }
+    static bool validarCPF(string cpf){
+        if(cpf.length() < 14){
+            cout << "CPF invalido." << endl;
+            return false;
+        }
+        for(int i = 0; i < int(cpf.length()); i++){
+            if(i == 3 || i == 7){
+                if(cpf[i]!= '.'){
+                    cout << "CPF invalido." << endl;
+                    return false;
+                }
+            }
+            else if(i == 11){
+                if(cpf[i] != '-'){
+                    cout << "CPF invalido." << endl;
+                    return false;
+                }
+            }
+            else{
+                if(!(cpf[i] >= '0' && cpf[i]<='9')){
+                    cout << "CPF invalido." << endl;
+                    return false;
+                }
+            }
+
+        }
+        return true;
     }
     static int getPosPaciente(string cpf, vector<Paciente * > pacientes){
             int pos = 0;
@@ -349,20 +450,20 @@ class Consulta{
 };
 
 void menuPacientes(vector<Paciente *> &pacientes);
-void menuMedicos(vector<Medico *> &medicos);
-void menuConsultas(vector<Paciente *> pacientes, vector<Medico *> medicos, vector<Consulta *> &consultas);
+//void menuMedicos(vector<Medico *> &medicos);
+//void menuConsultas(vector<Paciente *> pacientes, vector<Medico *> medicos, vector<Consulta *> &consultas);
 
 int main (){
     vector<Paciente *> pacientes;
     vector<Medico *> medicos;
     vector<Consulta *> consultas;
 
-    int opcao;
+    int opcao = 1;
     do{
         cout << "_____________MENU_____________" << endl;
-        cout << "1. Gestão de Pacientes" << endl;
-        cout << "2. Gestão de Medicos" << endl;
-        cout << "3. Gestão de Consultas" << endl;
+        cout << "1. Gestao de Pacientes" << endl;
+        cout << "2. Gestao de Medicos" << endl;
+        cout << "3. Gestao de Consultas" << endl;
         cout << "0. Sair" << endl;
         cin >> opcao;
 
@@ -371,10 +472,10 @@ int main (){
             menuPacientes(pacientes);
             break;
         case 2:
-            menuMedicos(medicos);
+            //menuMedicos(medicos);
             break;
         case 3:
-            menuConsultas(pacientes, medicos, consultas);
+            //menuConsultas(pacientes, medicos, consultas);
             break;
         }
     }while (opcao != 0);
@@ -396,20 +497,25 @@ void menuPacientes(vector<Paciente*> &pacientes){
 
         switch (opcao){
         case 1:
+            Paciente::addPaciente(pacientes);
             break;
         case 2:
+            Paciente::deletePaciente(pacientes);
             break;
         case 3:
+            Paciente::updatePaciente(pacientes);
             break;
         case 4:
+            Paciente::listar(pacientes);
             break;
         case 5:
+            Paciente::locatePaciente(pacientes);
             break;
         }
 
     }while(opcao != 0);
 }
-void menuMedicos(vector<Medico*> &medicos){
+/*void menuMedicos(vector<Medico*> &medicos){
     int opcao;
     do{
         cout << "__________GESTAO DE MEDICOS__________" << endl;
@@ -463,3 +569,4 @@ void menuConsultas(vector<Paciente *> pacientes, vector<Medico *> medicos, vecto
 
     }while(opcao != 0);
 }
+*/
