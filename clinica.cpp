@@ -480,9 +480,9 @@ class Consulta{
                 cout << "Paciente inexistente" << endl;
                 return;
             }
+            novaConsulta->setPaciente(pacientes[pos]);
             cout << "Informe o CRM do medico" << endl;
             cin >> crm;
-            novaConsulta->setPaciente(pacientes[pos]);
             pos = Medico::getPosMedico(crm, medicos);
             if( pos == -1){
                 cout << "Medico inexistente" << endl;
@@ -503,8 +503,8 @@ class Consulta{
             if(op == 's'){
                 cout << "Informe o convenio" << endl;
                 cin >> _convenio;
+                novaConsulta->setConvenio(_convenio);
             }
-            novaConsulta->setConvenio(_convenio);
             consultas.push_back(novaConsulta);
         }
         static void deleteConsulta(vector<Consulta *> &consultas){
@@ -655,7 +655,7 @@ int main (){
     vector<Medico *> medicos;
     vector<Consulta *> consultas;
 
-    int opcao = 1;
+    int opcao;
     do{
         cout << "_____________MENU_____________" << endl;
         cout << "1. Gestao de Pacientes" << endl;
