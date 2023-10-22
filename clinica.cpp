@@ -69,10 +69,8 @@ class Paciente {
 
 private:
 
-
-
     string nome, cpf, convenio; 
-    int dia, mes, ano;
+    Data * dataNasc;
 
 public:
     void setNome(string _Nome){
@@ -83,26 +81,13 @@ public:
     }
     string getCPF(){
         return cpf;
+    } 
+    Data * getData(){
+        return this->dataNasc;
     }
-    void setData (int _dia, int _mes, int _ano){
-        dia = _dia;
-        mes = _mes;
-        ano = _ano;
+    void setData(Data * _data){
+         this -> dataNasc = _data;
     }
-    string getData(){
-       return to_string(dia)+"/"+to_string(mes)+"/"+to_string(ano);
-    }
-    
-
-Paciente(){
-    cout << "Digite um nome: " << endl;
-    cin.ignore();
-    getline(cin, nome);
-    cout << "Digite o CPF: " << endl;
-    cin >> cpf;
-    cout <<"Digite a data de nascimento:" << endl;
-    cin >> dia >> mes >> ano;
-}
 };
 
 class Medico{
