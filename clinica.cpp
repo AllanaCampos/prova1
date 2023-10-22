@@ -79,6 +79,9 @@ public:
     string getNome(){
         return nome;
     }
+    void setCPF(string _cpf){
+        this->cpf = _cpf;
+    }
     string getCPF(){
         return cpf;
     } 
@@ -98,33 +101,33 @@ public:
             }
             return -1;
         }
-        static void locatePaciente(vector<Paciente * > pacientes){
-            Paciente *encontrado;
-            string cpf;
-            int pos;
-            cout << "Digite o CPF do paciente que deseja localizar" << endl;
-            cin.ignore();
-            getline(cin, cpf);
-            pos = Paciente::getPosPaciente(cpf, pacientes);
-            if(pos == -1){
-                cout << "Paciente não encontrado" << endl;
-            }
-            else{
-                encontrado = pacientes[pos];
-                cout << "Nome: " << encontrado -> getNome() << endl;
-                cout << "Data de nascimento: ";
-                encontrado -> getData()-> imprimirData();
-            }
+    static void locatePaciente(vector<Paciente * > pacientes){
+        Paciente *encontrado;
+        string cpf;
+        int pos;
+        cout << "Digite o CPF do paciente que deseja localizar" << endl;
+        cin.ignore();
+        getline(cin, cpf);
+        pos = Paciente::getPosPaciente(cpf, pacientes);
+        if(pos == -1){
+            cout << "Paciente não encontrado" << endl;
         }
-        static void listar(vector<Paciente*> pacientes){
-            cout << "<__________PACIENTES CADASTRADOS__________>" << endl;
-            for(auto p : pacientes){
-                cout << "Nome: " << p -> getNome() << endl;
-                cout << "CPF: " << p -> getCPF() << endl;
-                cout << "Data de Nascimento: ";
-                p ->getData()-> imprimirData();
-            }
-        } 
+        else{
+            encontrado = pacientes[pos];
+            cout << "Nome: " << encontrado -> getNome() << endl;
+            cout << "Data de nascimento: ";
+            encontrado -> getData()-> imprimirData();
+        }
+    }
+    static void listar(vector<Paciente*> pacientes){
+        cout << "<__________PACIENTES CADASTRADOS__________>" << endl;
+        for(auto p : pacientes){
+            cout << "Nome: " << p -> getNome() << endl;
+            cout << "CPF: " << p -> getCPF() << endl;
+            cout << "Data de Nascimento: ";
+            p ->getData()-> imprimirData();
+        }
+    } 
 };
 
 class Medico{
@@ -157,39 +160,39 @@ class Medico{
     }
 
     static int getPosMedico(string CRM, vector<Medico *> Medicos){
-            int pos = 0;
-            for(Medico * m : Medicos){
-                if(m->getCRM() == CRM){
-                    return pos;
-                }
-                pos++;
+        int pos = 0;
+        for(Medico * m : Medicos){
+            if(m->getCRM() == CRM){
+                return pos;
             }
-            return -1;
+            pos++;
+        }
+        return -1;
     }
     static void listar(vector<Medico *> Medicos){
-            cout << "<____________MÉDICOS ENCONTRADOS____________>" << endl;
-            for(auto m : Medicos){
-                cout << "Nome: " << m->Nome << endl;
-                cout << "CRM: " << m->getCRM() << endl;
-                cout << "Especialidade: " << m->getEspecialidade() << endl;
-            }
+        cout << "<____________MÉDICOS ENCONTRADOS____________>" << endl;
+        for(auto m : Medicos){
+            cout << "Nome: " << m->Nome << endl;
+            cout << "CRM: " << m->getCRM() << endl;
+            cout << "Especialidade: " << m->getEspecialidade() << endl;
+        }
     }
     static void localizarMedico(vector<Medico *> Medicos){
-            Medico *encontrado;
-            string CRM;
-            int pos;
-            cout << "Digite o CRM do médico que deseja localizar:" << endl;
-            cin.ignore();
-            getline(cin >> ws, CRM);
-            pos = Medico::getPosMedico(CRM, Medicos);
-            if(pos == -1){
-                cout << "Paciente não encontrado" << endl;
-            }
-            else{
-                encontrado = Medicos[pos];
-                cout << "Nome: " << encontrado->Nome << endl;
-                cout << "Data de nascimento: " << encontrado->getEspecialidade() << endl;
-            }
+        Medico *encontrado;
+        string CRM;
+        int pos;
+        cout << "Digite o CRM do médico que deseja localizar:" << endl;
+        cin.ignore();
+        getline(cin >> ws, CRM);
+        pos = Medico::getPosMedico(CRM, Medicos);
+        if(pos == -1){
+            cout << "Paciente não encontrado" << endl;
+        }
+        else{
+            encontrado = Medicos[pos];
+            cout << "Nome: " << encontrado->Nome << endl;
+            cout << "Data de nascimento: " << encontrado->getEspecialidade() << endl;
+        }
     }
 };
 
@@ -297,7 +300,7 @@ class Consulta{
             this->medico = _medico;
         }
     
-static void listarPacientes(string crm, vector<Consulta *> consultas){
+        static void listarPacientes(string crm, vector<Consulta *> consultas){
             cout << "<_________PACIENTES COM CONSULTAS MARCADAS________>" << endl;
             for(auto c : consultas){
                 if(c->getMedico()->getCRM() == crm){
@@ -316,7 +319,7 @@ static void listarPacientes(string crm, vector<Consulta *> consultas){
             }
             return false;
         }
-static void listarConsultas(vector<Consulta *> consultas){
+        static void listarConsultas(vector<Consulta *> consultas){
             cout << "<_________Consultas realizadas_________>" << endl;
             for(auto c : consultas){
                 if(c->getEfetuada() == 's'){
@@ -345,9 +348,14 @@ static void listarConsultas(vector<Consulta *> consultas){
 
 };
 
+void menuPacientes(vector<Paciente *> &pacientes);
+void menuMedicos(vector<Medico *> &medicos);
+void menuConsultas(vector<Paciente *> pacientes, vector<Medico *> medicos, vector<Consulta *> &consultas);
+
 int main (){
     vector<Paciente *> pacientes;
     vector<Medico *> medicos;
+    vector<Consulta *> consultas;
 
     int opcao;
     do{
@@ -360,15 +368,98 @@ int main (){
 
         switch (opcao){
         case 1:
+            menuPacientes(pacientes);
             break;
-
         case 2:
+            menuMedicos(medicos);
             break;
-
         case 3:
+            menuConsultas(pacientes, medicos, consultas);
             break;
         }
     }while (opcao != 0);
     return 0;
 }
 
+void menuPacientes(vector<Paciente*> &pacientes){
+    int opcao;
+    do{
+        cout << "__________GESTAO DE PACIENTES__________" << endl;
+        cout << "1- Incluir" << endl;
+        cout << "2- Excluir" << endl;
+        cout << "3- Alterar" << endl;
+        cout << "4- Listar" << endl;
+        cout << "5- Localizar" << endl;
+        cout << "0- Sair" << endl;
+
+        cin >> opcao;
+
+        switch (opcao){
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        }
+
+    }while(opcao != 0);
+}
+void menuMedicos(vector<Medico*> &medicos){
+    int opcao;
+    do{
+        cout << "__________GESTAO DE MEDICOS__________" << endl;
+        cout << "1- Incluir" << endl;
+        cout << "2- Excluir" << endl;
+        cout << "3- Alterar" << endl;
+        cout << "4- Listar" << endl;
+        cout << "5- Localizar" << endl;
+        cout << "0- Sair" << endl;
+
+        cin >> opcao;
+
+        switch (opcao){
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        }
+
+    }while(opcao != 0);
+}
+
+void menuConsultas(vector<Paciente *> pacientes, vector<Medico *> medicos, vector<Consulta *> &consultas){
+    int opcao;
+    do{
+        cout << "__________GESTAO DE CONSULTAS__________" << endl;
+        cout << "1- Incluir" << endl;
+        cout << "2- Excluir" << endl;
+        cout << "3- Alterar" << endl;
+        cout << "4- Listar" << endl;
+        cout << "0- Sair" << endl;
+
+        cin >> opcao;
+
+        switch (opcao){
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        }
+
+    }while(opcao != 0);
+}
