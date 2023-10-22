@@ -54,7 +54,7 @@ class Data{
             Data * novaData = new Data(); 
             int _Dia, _Mes, _Ano; 
             do {
-                cout << "Digite o dia, o mes e o ano: " << endl;
+                cout << "Digite o dia, o mes e o ano utilizando o seguinte formato: DD MM AAAA" << endl;
                 cin >> _Dia >> _Mes >> _Ano; 
                 novaData->setDia(_Dia); 
                 novaData->setMes(_Mes);
